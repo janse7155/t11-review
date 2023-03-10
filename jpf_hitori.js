@@ -5,8 +5,8 @@
    Tutorial 11
    Review Assignment
 
-   Author: 
-   Date:   
+   Author: Jaedan
+   Date:   3/10/23  
 
    Global Variables
    ================
@@ -47,13 +47,114 @@
 	
 */
 
+var allCells;
 
+window.onload = startUp;
 
+function startUp() {
+  document.getElementById("puzzleTitle").innerHTML = "Puzzle 1";
+  document.getElementById("puzzle").innerHTML = drawHitori(
+    hitori1Numbers,
+    hitori1Blocks,
+    hitori1Rating
+  );
 
+  var puzzleButtons = document.getElementsByClassName("puzzles");
+  for (var i = 0; i < puzzleButtons.length; i++) {
+    puzzleButtons[i].onclick = switchPuzzle;
+  }
 
+  setupPuzzle();
 
+  document.getElementById("check").onclick = findErrors;
+  document.getElementById("solve").onclick = showSolution;
+}
 
+function switchPuzzle(e) {
+  if (confirm("Switching puzzles will erase your work. Are you sure?")) {
+    var puzzleID = e.target.id;
+    document.getElementById("puzzleTitle").innerHTML = e.target.value;
+    switch (puzzleID) {
+      case "puzzle1":
+        document.getElementById("puzzle").innerHTML = drawHitori(
+          hitori1Numbers,
+          hitori1Blocks,
+          hitori1Rating
+        );
+        break;
+      case "puzzle2":
+        document.getElementById("puzzle").innerHTML = drawHitori(
+          hitori2Numbers,
+          hitori2Blocks,
+          hitori2Rating
+        );
+        break;
+      case "puzzle3":
+        document.getElementById("puzzle").innerHTML = drawHitori(
+          hitori3Numbers,
+          hitori3Blocks,
+          hitori3Rating
+        );
+        break;
+    }
+    setupPuzzle();
+  }
+}
 
+function setupPuzzle() {
+  allCells = document.querySelectorAll("#hitoriGrid td");
+  for (var i = 0; i < allCells.length; i++) {
+    allCells[i].style.backgroundColor = "white";
+    allCells[i].style.color = "black";
+    allCells[i].style.borderRadius = "0";
+    allCells[i].addEventListener("mousedown", function (e) {
+      if (e.shiftKey) {
+        this.style.backgroundColor = "white";
+        this.style.color = "black";
+        this.style.borderRadius = "0";
+      } else if (e.altKey) {
+        this.style.backgroundColor = "black";
+        this.style.color = "white";
+        this.style.borderRadius = "0";
+      } else {
+        this.style.backgroundColor = "rgb(101, 101, 101)";
+        this.style.color = "white";
+        this.style.borderRadius = "50%";
+      }
+      e.preventDefault();
+    });
+    allCells[i].addEventListener("mouseover", function (e) {
+      if (e.shiftKey) {
+        this.style.cursor = "url(jpf_eraser.png), alias";
+      } else if (e.altKey) {
+        this.style.cursor = "url(jpf_block.png), cell";
+      } else {
+        this.style.cursor = "url(jpf_circle.png), pointer";
+      }
+    });
+    allCells[i].addEventListener("mouseup", checkSolution);
+  }
+}
+
+function findErrors() {
+  for (var i = 0; i < allCells.length; i++) {
+    if (
+      (allCells[i].className == "blocks" &&
+        allCells[i].style.backgroundColor == "rgb(101, 101, 101)") ||
+      (allCells[i].className == "circles" &&
+        allCells[i].style.backgroundColor == "black")
+    ) {
+      allCells[i].style.color = "red";
+    }
+  }
+  setTimeout(function () {
+    for (var i = 0; i < allCells.length; i++) {
+      if (allCells[i].style.color == "red") {
+        allCells[i].style.color = "white";
+      }
+    }
+  }, 1000);
+}
 
 
          
